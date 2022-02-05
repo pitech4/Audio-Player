@@ -17,6 +17,18 @@ const AudioPlayer = () => {
     progressBar.current.max = seconds; // sets the maximum range to the length of the song.
   }, [audioPlayer?.current?.loadedmetadata, audioPlayer?.current?.readyState]);  
 
+  useEffect(() => {
+    if (currentTime == 75) {
+      togglePlayPause();
+      progressBar.current.value = 0;
+      changeRange();
+    }
+    else {
+      
+    }
+  },[currentTime])
+
+
   const calculateTime = (secs) => {
       const minutes = Math.floor(secs/60);
       const returnMinutes = minutes<10 ? `0${minutes}` : `${minutes}`;
@@ -26,7 +38,7 @@ const AudioPlayer = () => {
       return `${returnMinutes}:${returnSeconds}`;
   }
 
-  const togglePlayPause= () => {
+  const togglePlayPause = () => {
       const prevValue = isPlaying;
       setIsPlaying(!prevValue);
       if(!prevValue) {
@@ -38,8 +50,6 @@ const AudioPlayer = () => {
           audioPlayer.current.pause();
           cancelAnimationFrame(animationRef.current);
       }
-
-      
   }
 
   const whenPlaying = () => {
@@ -71,7 +81,7 @@ const AudioPlayer = () => {
   return (
   <div>
       <audio ref={audioPlayer} src='https://cdn.simplecast.com/audio/cae8b0eb-d9a9-480d-a652-0defcbe047f4/episodes/af52a99b-88c0-4638-b120-d46e142d06d3/audio/500344fb-2e2b-48af-be86-af6ac341a6da/default_tc.mp3' preload='metadata'></audio>
-      <button onClick={backwards}>backword</button>
+      <button onClick={backwards}>backwards</button>
       <button onClick={togglePlayPause}>
           {isPlaying ? "pause" : "play"}
       </button>
