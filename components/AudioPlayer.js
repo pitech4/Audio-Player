@@ -1,15 +1,36 @@
 import React, {useState, useRef, useEffect} from 'react';
 import styles from '../styles/AudioPlayer.module.css';
 
-const AudioPlayer = () => {
+const AudioPlayer = ({timeJump}) => {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
+  const chapters = [
+    {
+      start: 20,
+      end: 35,
+    },
+    {
+      start: 60,
+      end: 75,
+    }
+  ]
+
   const audioPlayer = useRef(); //referenceing the audio component
   const progressBar = useRef(); // reference to progress bar
   const animationRef = useRef() // refernce the animation
+
+  useEffect(() => {
+    if (timeJump) {
+      progressBar.current.value = timeJump;
+    }
+    else {
+      progressBar.current.value = 0;
+    }
+    changeRange();
+  },[timeJump])
 
   useEffect(() => {
     const seconds = Math.floor(audioPlayer.current.duration);
@@ -91,8 +112,25 @@ const AudioPlayer = () => {
       <div>{calculateTime(currentTime)}</div>
       
       {/* progress bar */}
-      <div>
-        <input type="range" className={styles.progressBar} defaultValue="0" ref={progressBar} onChange={changeRange} step="0.05"></input> 
+      <div className={styles.progressBarWrapper}>
+        <input type="range" className={styles.progressBar} defaultValue="0" ref={progressBar} onChange={changeRange} step="0.05" ></input> 
+        {chapters.map((c, i) => {
+          const leftStyle = c.start / duration * 100;
+          const widthStyle = (c.end - c.start) / duration * 100;
+          console.table({i, leftStyle , widthStyle})
+          return (
+          <div 
+          key={i} 
+          className={`${styles.chapter} ${c.start == 0 && styles.start} ${c.end == duration && styles.end}`} 
+          style={
+              {
+                '--left' : `${leftStyle}%`,
+                '--width' : `${widthStyle}%`,
+              }
+          }>
+          </div>
+          )
+        })}
       </div> 
 
       {/* total duration */}
