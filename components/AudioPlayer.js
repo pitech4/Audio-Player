@@ -1,7 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 import styles from '../styles/AudioPlayer.module.css';
 
-const AudioPlayer = () => {
+const AudioPlayer = ({timeJump}) => {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -10,6 +10,16 @@ const AudioPlayer = () => {
   const audioPlayer = useRef(); //referenceing the audio component
   const progressBar = useRef(); // reference to progress bar
   const animationRef = useRef() // refernce the animation
+
+  useEffect(() => {
+    if (timeJump) {
+      progressBar.current.value = timeJump;
+    }
+    else {
+      progressBar.current.value = 0;
+    }
+    changeRange();
+  },[timeJump])
 
   useEffect(() => {
     const seconds = Math.floor(audioPlayer.current.duration);
